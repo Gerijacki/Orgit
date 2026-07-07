@@ -15,8 +15,10 @@ permissions:
 jobs:
   welcome:
     # author_association is one of OWNER / MEMBER / COLLABORATOR / CONTRIBUTOR / NONE / ...
-    # Treat everyone who is not an owner/member/collaborator as an external contributor.
+    # Treat everyone who is not an owner/member/collaborator as an external contributor,
+    # but never greet bots (Dependabot, Renovate, …) — they don't read thank-you notes.
     if: >
+      github.event.pull_request.user.type != 'Bot' &&
       github.event.pull_request.author_association != 'OWNER' &&
       github.event.pull_request.author_association != 'MEMBER' &&
       github.event.pull_request.author_association != 'COLLABORATOR'
