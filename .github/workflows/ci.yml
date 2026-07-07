@@ -24,7 +24,7 @@ jobs:
       # or pnpm/action-setup errors on the conflict.
       - uses: pnpm/action-setup@v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
