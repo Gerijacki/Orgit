@@ -35,7 +35,7 @@ jobs:
       contents: read
       id-token: write # npm provenance
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # pnpm version comes from package.json "packageManager" — do not also set it here,
       # or pnpm/action-setup errors on the conflict.
