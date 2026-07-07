@@ -22,11 +22,29 @@ Orgit's repository is automated end to end. This page lists the workflows and th
   (The package name `orgit` must be available/owned by you on npm.)
 - `GITHUB_TOKEN` is provided automatically — nothing to add.
 
-### 2. Repository settings (Settings → General → Pull Requests)
+### 2. Repository settings (Settings → General)
+
+Under **Pull Requests**:
 
 - ✅ **Allow auto-merge** — required for the Dependabot auto-merge workflow.
 - ✅ **Allow squash merging** (the automerge uses `--squash`).
 - (Optional) Automatically delete head branches.
+
+Under **Actions → General → Workflow permissions**:
+
+- ✅ **Allow GitHub Actions to create and approve pull requests** — **required for
+  `release.yml`.** Without it, release-please builds the release but fails on the last step
+  with _"GitHub Actions is not permitted to create or approve pull requests."_ The workflow
+  already grants `contents: write` + `pull-requests: write`; this repo-level toggle is a
+  separate gate that is **off by default**.
+
+Or via the CLI (after `gh auth login`):
+
+```bash
+gh api -X PUT repos/Gerijacki/Orgit/actions/permissions/workflow \
+  -f default_workflow_permissions=write \
+  -F can_approve_pull_request_reviews=true
+```
 
 ### 3. Branch protection on `main` (enforces "no merge without approval")
 
