@@ -124,13 +124,22 @@ export class Engine {
     const conventions = renderConventions(await loadConventions(this.ctx.workspace));
     const limit = Math.max(1, opts.concurrency ?? 1);
 
-    // Analyze + Modify: generate every task's edit, in parallel where allowed.
+    // Analyze + Modify: generate every task's edit, in parallel where allowed. Each
+    // generation is a whole-file LLM call, so log per-task progress — otherwise a large
+    // plan looks hung during this (token-heavy) phase before any commit happens.
     log.step(
       `Modify — generating ${tasks.length} edit(s)${limit > 1 ? ` (${limit} in parallel)` : ""}`,
     );
-    const generated = await mapWithConcurrency(tasks, limit, (task) =>
-      generateEdit(model, task, this.ctx.provider, conventions),
-    );
+    let generatedCount = 0;
+    const generated = await mapWithConcurrency(tasks, limit, async (task) => {
+      const g = await generateEdit(model, task, this.ctx.provider, conventions);
+      log.info(
+        log.dim(
+          `  edit ready ${++generatedCount}/${tasks.length} — ${task.id}${g.skip ? ` (skipped: ${g.skip})` : ""}`,
+        ),
+      );
+      return g;
+    });
 
     if (opts.dryRun) {
       return tasks.map((task, i) => ({

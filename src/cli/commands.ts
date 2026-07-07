@@ -32,6 +32,9 @@ export interface GlobalOpts {
   cwd: string;
 }
 
+/** Default number of tasks a plain `orgit evolve` applies per run (small & incremental). */
+const DEFAULT_EVOLVE_MAX = 5;
+
 /** `orgit analyze` — Understand + Analyze: build the mental model and index memory. */
 export async function analyzeCmd(g: GlobalOpts): Promise<void> {
   const ctx = await buildContext(g.cwd, { withoutProvider: true });
@@ -135,6 +138,10 @@ export async function evolveCmd(o: EvolveOpts): Promise<void> {
   const engine = new Engine(ctx);
   const maxIterations = o.continuous ? (o.maxIterations ?? 5) : 1;
   const concurrency = o.concurrency ?? ctx.config.concurrency;
+  // Bound a plain run: generating every task's edit up front is token-heavy and yields no
+  // commit until it finishes. Default to a small batch (the tool's "small, incremental"
+  // ethos) — raise it with --max N, or use --continuous to work through more over cycles.
+  const max = o.max ?? DEFAULT_EVOLVE_MAX;
   const approver = o.interactive && !o.dryRun ? createInteractiveApprover() : undefined;
 
   // Branch isolation: apply changes on a fresh branch so the base branch stays pristine
@@ -171,11 +178,18 @@ export async function evolveCmd(o: EvolveOpts): Promise<void> {
         break;
       }
 
-      const count = o.max ? Math.min(o.max, plan.tasks.length) : plan.tasks.length;
+      const count = Math.min(max, plan.tasks.length);
+      if (!o.max && plan.tasks.length > max) {
+        log.info(
+          log.dim(
+            `Plan has ${plan.tasks.length} tasks; applying the top ${max} this run (raise with --max N, or use --continuous).`,
+          ),
+        );
+      }
       log.heading(`Executing ${count} task(s)`);
       const results = await engine.execute(model, plan, {
         dryRun: o.dryRun,
-        max: o.max,
+        max,
         concurrency,
         approve: approver?.approve,
         reviewer: o.review ? new ReviewerAgent(ctx.provider).asReviewer() : undefined,
