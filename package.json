@@ -67,16 +67,16 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.110.0",
-    "@lancedb/lancedb": "^0.24.0",
-    "commander": "^14.0.2",
+    "@lancedb/lancedb": "^0.31.0",
+    "commander": "^15.0.0",
     "execa": "^9.5.2",
     "fast-glob": "^3.3.3",
-    "fastembed": "^1.14.4",
+    "fastembed": "^2.1.0",
     "ignore": "^7.0.5",
-    "ora": "^8.2.0",
+    "ora": "^9.4.1",
     "picocolors": "^1.1.1",
     "simple-git": "^3.28.0",
-    "zod": "^3.25.76"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
