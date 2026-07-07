@@ -71,7 +71,7 @@ program
   .command("evolve")
   .description("Execution / auto / continuous mode: run the full cycle and apply improvements")
   .option("--dry-run", "plan and generate edits without writing or committing", false)
-  .option("--max <n>", "maximum number of tasks to apply per cycle", (v) => parseInt(v, 10))
+  .option("--max <n>", "maximum tasks to apply per cycle (default 5)", (v) => parseInt(v, 10))
   .option("--continuous", "keep running cycles until the project reaches a stable point", false)
   .option("--max-iterations <n>", "cap on continuous cycles (default 5)", (v) => parseInt(v, 10))
   .option("--branch", "apply changes on a fresh orgit/evolve-* branch (PR-ready)", false)
