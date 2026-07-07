@@ -1,0 +1,45 @@
+name: PR welcome
+
+# When someone who is NOT a maintainer/collaborator opens a pull request, post a
+# friendly thank-you letting them know it will be reviewed. Merging is gated on an
+# approving review from a maintainer via branch protection (see docs/AUTOMATION.md) —
+# this workflow only comments; it does not change merge permissions.
+
+on:
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  welcome:
+    # author_association is one of OWNER / MEMBER / COLLABORATOR / CONTRIBUTOR / NONE / ...
+    # Treat everyone who is not an owner/member/collaborator as an external contributor.
+    if: >
+      github.event.pull_request.author_association != 'OWNER' &&
+      github.event.pull_request.author_association != 'MEMBER' &&
+      github.event.pull_request.author_association != 'COLLABORATOR'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say thanks
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const author = context.payload.pull_request.user.login;
+            const body = [
+              `👋 Thanks so much for opening this pull request, @${author}!`,
+              ``,
+              `We really appreciate the contribution. A maintainer will review it soon — a change is`,
+              `only merged after at least one approving review from a maintainer, so please don't worry`,
+              `if it isn't merged immediately.`,
+              ``,
+              `In the meantime, please make sure CI is green and that your PR describes the motivation,`,
+              `the change, and its impact (see the PR template). Thanks again! 🙌`,
+            ].join("\n");
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body,
+            });

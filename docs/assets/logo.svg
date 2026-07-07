@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Orgit logo">
+  <defs>
+    <linearGradient id="orgit-g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+  <!-- Continuous-evolution cycle: an open ring (the repository) with an active node at the seam. -->
+  <g transform="translate(48,48)">
+    <path d="M 20.4 -13.2 A 24 24 0 1 0 20.4 13.2"
+          fill="none" stroke="url(#orgit-g)" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="0" cy="0" r="7.5" fill="url(#orgit-g)"/>
+    <circle cx="22.6" cy="0" r="8.5" fill="url(#orgit-g)"/>
+  </g>
+</svg>

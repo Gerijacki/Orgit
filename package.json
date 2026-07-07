@@ -1,0 +1,101 @@
+{
+  "name": "orgit",
+  "version": "0.1.0",
+  "description": "Autonomous repository evolution engine powered by Claude Code.",
+  "keywords": [
+    "ai",
+    "llm",
+    "claude",
+    "claude-code",
+    "anthropic",
+    "automation",
+    "developer-tools",
+    "repository",
+    "refactoring",
+    "architecture",
+    "technical-debt",
+    "code-quality",
+    "software-engineering",
+    "developer-productivity",
+    "agentic",
+    "autonomous-agents",
+    "documentation",
+    "cli"
+  ],
+  "homepage": "https://github.com/Gerijacki/Orgit#readme",
+  "bugs": {
+    "url": "https://github.com/Gerijacki/Orgit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gerijacki/Orgit.git"
+  },
+  "license": "MIT",
+  "author": "Gerijacki",
+  "type": "module",
+  "packageManager": "pnpm@10.6.5",
+  "bin": {
+    "orgit": "dist/cli/index.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/cli/index.ts",
+    "orgit": "tsx src/cli/index.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "cross-env ORGIT_E2E=1 vitest run"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.110.0",
+    "@lancedb/lancedb": "^0.24.0",
+    "commander": "^14.0.2",
+    "execa": "^9.5.2",
+    "fast-glob": "^3.3.3",
+    "fastembed": "^1.14.4",
+    "ignore": "^7.0.5",
+    "ora": "^8.2.0",
+    "picocolors": "^1.1.1",
+    "simple-git": "^3.28.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.20.0",
+    "@types/node": "^22.15.0",
+    "@vitest/coverage-v8": "^3.0.5",
+    "cross-env": "^10.1.0",
+    "eslint": "^9.20.0",
+    "prettier": "^3.5.0",
+    "tsup": "^8.4.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.24.0",
+    "vitest": "^3.0.5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "onnxruntime-node",
+      "@lancedb/lancedb"
+    ]
+  }
+}

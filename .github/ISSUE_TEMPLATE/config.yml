@@ -1,0 +1,10 @@
+# Nudge people to the right place instead of empty issues. Enable GitHub Discussions
+# in the repo settings for the "Questions & ideas" link to resolve.
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Questions & ideas
+    url: https://github.com/Gerijacki/Orgit/discussions
+    about: Ask a question, share an idea, or discuss usage — please don't open an issue for these.
+  - name: 🔒 Report a security vulnerability
+    url: https://github.com/Gerijacki/Orgit/security/advisories/new
+    about: Please report vulnerabilities privately (see SECURITY.md), not as a public issue.

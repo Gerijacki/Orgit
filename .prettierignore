@@ -1,0 +1,7 @@
+dist/
+node_modules/
+.orgit/
+pnpm-lock.yaml
+
+# Design/spec docs are authored prose — keep them exactly as written.
+docs/spec/

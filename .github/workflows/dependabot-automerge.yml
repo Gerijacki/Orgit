@@ -1,0 +1,42 @@
+name: Dependabot auto-merge
+
+# Auto-approve and auto-merge Dependabot PRs for minor and patch updates.
+# Major updates are left for manual review (they can carry breaking changes).
+# Requires: repo setting "Allow auto-merge" enabled, and branch protection on `main`
+# with required status checks (so --auto waits for CI to pass before merging).
+
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  automerge:
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Dependabot metadata
+        id: meta
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Approve and enable auto-merge (minor & patch)
+        if: >
+          steps.meta.outputs.update-type == 'version-update:semver-minor' ||
+          steps.meta.outputs.update-type == 'version-update:semver-patch'
+        run: |
+          gh pr review --approve "$PR_URL"
+          gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Flag major updates for manual review
+        if: ${{ steps.meta.outputs.update-type == 'version-update:semver-major' }}
+        run: |
+          gh pr comment "$PR_URL" --body "🚧 This is a **major** version update (\`${{ steps.meta.outputs.dependency-names }}\`). Auto-merge is intentionally disabled for majors — a maintainer will review and merge it manually."
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

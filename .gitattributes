@@ -1,0 +1,26 @@
+# Normalise line endings so diffs and formatting are identical across OSes.
+* text=auto eol=lf
+
+# Explicit source types (belt and suspenders).
+*.ts   text eol=lf
+*.js   text eol=lf
+*.json text eol=lf
+*.md   text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+
+# Never touch line endings of binaries.
+*.png  binary
+*.jpg  binary
+*.gif  binary
+*.pdf  binary
+*.woff binary
+*.woff2 binary
+
+# Keep the lockfile intact and out of language stats / diffs.
+pnpm-lock.yaml -diff linguist-generated
+
+# Don't count spec/design docs as the project's language.
+docs/spec/** linguist-documentation
+docs/**      linguist-documentation
+examples/**  linguist-documentation

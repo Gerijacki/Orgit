@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 240" width="1040" height="240" role="img" aria-label="Orgit — The Autonomous Repository Evolution Engine for Claude Code">
+  <defs>
+    <linearGradient id="orgit-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+  <!-- Mark: continuous-evolution cycle (open ring + active node). -->
+  <g transform="translate(120,120) scale(1.35)">
+    <path d="M 20.4 -13.2 A 24 24 0 1 0 20.4 13.2"
+          fill="none" stroke="url(#orgit-bg)" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="0" cy="0" r="7.5" fill="url(#orgit-bg)"/>
+    <circle cx="22.6" cy="0" r="8.5" fill="url(#orgit-bg)"/>
+  </g>
+  <!-- Wordmark + tagline. Indigo reads on both light and dark GitHub themes. -->
+  <text x="228" y="118"
+        font-family="ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif"
+        font-size="92" font-weight="800" letter-spacing="-3" fill="#6366f1">Orgit</text>
+  <text x="232" y="166"
+        font-family="ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif"
+        font-size="27" font-weight="500" fill="#8b8fa3">The Autonomous Repository Evolution Engine for Claude Code</text>
+</svg>
