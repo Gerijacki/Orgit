@@ -35,6 +35,10 @@ jobs:
     permissions:
       contents: read
       id-token: write # npm provenance
+    # Surface the secret as a job env so steps can check whether it is configured
+    # (the `secrets` context can't be used directly in an `if:` condition).
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v7
 
@@ -59,6 +63,13 @@ jobs:
           pnpm build
 
       - name: Publish to npm
+        if: ${{ env.NPM_TOKEN != '' }}
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Skip npm publish (no NPM_TOKEN)
+        if: ${{ env.NPM_TOKEN == '' }}
+        run: |
+          echo "::notice::NPM_TOKEN is not set — skipping npm publish."
+          echo "The GitHub Release/tag was still created. Add an NPM_TOKEN secret to enable publishing."

@@ -17,9 +17,11 @@ Orgit's repository is automated end to end. This page lists the workflows and th
 
 ### 1. Secrets
 
-- **`NPM_TOKEN`** — an npm **automation** access token, added under
-  _Settings → Secrets and variables → Actions_. Required for `release.yml` to publish.
-  (The package name `orgit` must be available/owned by you on npm.)
+- **`NPM_TOKEN`** — _optional._ An npm **automation** access token (_Settings → Secrets and
+  variables → Actions_). Only needed if you want to publish to npm. **Without it the release
+  pipeline still runs** — release-please tags the version and creates a GitHub Release — it just
+  **skips the `npm publish` step**. Add the token later to enable publishing (the package name
+  `orgit` must be available/owned by you on npm).
 - `GITHUB_TOKEN` is provided automatically — nothing to add.
 
 ### 2. Repository settings (Settings → General)
