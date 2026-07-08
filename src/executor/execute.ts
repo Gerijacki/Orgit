@@ -6,7 +6,7 @@ import type { ClaudeProvider } from "../providers/types.js";
 import { completeJson } from "../providers/factory.js";
 import { Git } from "../util/git.js";
 import { validate } from "../validation/validate.js";
-import { readFileSafe, sha256 } from "../util/fsutil.js";
+import { readFileSafe, fileExists, sha256 } from "../util/fsutil.js";
 
 const EditResult = z.object({
   explanation: z.string(),
@@ -24,7 +24,10 @@ const EditResult = z.object({
 const EXECUTE_SYSTEM = `You are Orgit's executor: a careful senior engineer applying ONE small, reversible
 refactoring task. Rules:
 - Preserve behaviour. Do NOT change functionality or public APIs unless the task explicitly requires it.
-- Only edit the files listed for the task. Return the FULL new contents of each file you change.
+- Return the FULL new contents of each file you change. You must NOT modify any existing file that
+  isn't listed for the task. To de-duplicate, PREFER extracting the shared logic into a NEW module
+  (return its full contents, with correct relative import paths) rather than editing an existing
+  shared file — you may create new files freely, but editing an unlisted existing file is not allowed.
 - Make the smallest change that accomplishes the task. No unrelated edits, no reformatting churn.
 - If the task cannot be done safely, return an empty edits array and explain why.`;
 
@@ -95,7 +98,40 @@ export async function generateEdit(
     };
   }
 
-  const scoped = edit.edits.filter((e) => task.files.includes(e.path));
+  // Keep edits to the task's declared files, plus NEW files the refactor legitimately needs
+  // (e.g. extracting shared logic into a new module for a de-duplication task). Reject only edits
+  // that would modify an EXISTING file the task didn't declare — that preserves the "touch only
+  // what you declared" invariant while letting extract-to-helper refactors succeed. Previously such
+  // a new file was silently dropped while the rewritten files that imported it were kept, so every
+  // dedup task left a dangling import, failed validation, and always rolled back.
+  const scoped: Array<{ path: string; content: string }> = [];
+  const outOfScope: string[] = [];
+  for (const e of edit.edits) {
+    if (task.files.includes(e.path)) {
+      scoped.push(e);
+    } else if (
+      withinRepo(model.root, e.path) &&
+      !(await fileExists(path.join(model.root, e.path)))
+    ) {
+      scoped.push(e); // a brand-new, in-repo file the model created for this task
+    } else {
+      outOfScope.push(e.path); // an existing file the task didn't declare (or an out-of-repo path)
+    }
+  }
+  // Never apply only PART of a coherent edit. If the model also rewrote an existing file the task
+  // didn't declare (e.g. adding a helper to a shared module that the in-scope files then import),
+  // applying just the in-scope files leaves a broken tree that always fails validation and rolls
+  // back. Refuse the whole task instead — a clean skip, no wasted validation run, tree untouched.
+  // The prompt steers de-duplication toward NEW modules precisely so this refactor can still happen.
+  if (outOfScope.length > 0) {
+    return {
+      taskId: task.id,
+      edits: [],
+      explanation: edit.explanation,
+      sourceHashes,
+      skip: `edit spans files outside the task's scope (${outOfScope.join(", ")}); skipped to avoid a partial change`,
+    };
+  }
   if (scoped.length === 0) {
     return {
       taskId: task.id,
@@ -106,6 +142,13 @@ export async function generateEdit(
     };
   }
   return { taskId: task.id, edits: scoped, explanation: edit.explanation, sourceHashes };
+}
+
+/** True if `rel` is a repo-relative path that stays inside the repo (no `..` / absolute escape). */
+function withinRepo(root: string, rel: string): boolean {
+  if (path.isAbsolute(rel)) return false;
+  const relNorm = path.relative(root, path.resolve(root, rel));
+  return relNorm !== "" && !relNorm.startsWith("..") && !path.isAbsolute(relNorm);
 }
 
 /**

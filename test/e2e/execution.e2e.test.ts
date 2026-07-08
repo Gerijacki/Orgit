@@ -250,4 +250,70 @@ describe("executor generate/apply split", () => {
     expect(result.committed).toBe(true);
     expect(await fs.readFile(path.join(repo.root, "src/util/new.js"), "utf8")).toContain("ok");
   });
+
+  it("keeps a new shared helper the model invents for a de-duplication task", async () => {
+    repo = await makeTempGitRepo({
+      "package.json": PASS_PKG,
+      "src/a.js": longFn("alpha"),
+      "src/b.js": longFn("beta"),
+    });
+    const model = await buildMentalModel(repo.root, DEFAULT_CONFIG);
+    const dedupeTask: Task = {
+      ...task,
+      id: "task-dedupe",
+      title: "De-dupe",
+      files: ["src/a.js", "src/b.js"],
+    };
+    // The natural fix for a duplicate pair is extracting a shared helper — a NEW file that
+    // isn't in task.files. That must survive alongside the two in-scope rewrites.
+    const provider = new FakeProvider(() =>
+      JSON.stringify({
+        explanation: "Extract shared helper.",
+        edits: [
+          { path: "src/a.js", content: "require('./shared');\n" },
+          { path: "src/b.js", content: "require('./shared');\n" },
+          { path: "src/shared.js", content: "module.exports = {};\n" }, // new file, not in task.files
+        ],
+      }),
+    );
+    const gen = await generateEdit(model, dedupeTask, provider);
+    expect(gen.skip).toBeUndefined();
+    expect(gen.edits.map((e) => e.path).sort()).toEqual(["src/a.js", "src/b.js", "src/shared.js"]);
+  });
+
+  it("skips the whole task (no partial edit) when the model rewrites an unlisted existing file", async () => {
+    repo = await makeTempGitRepo({
+      "package.json": PASS_PKG,
+      "src/a.js": longFn("alpha"),
+      "src/b.js": longFn("beta"),
+      "src/shared.js": "module.exports = {};\n", // an EXISTING shared file, not in task.files
+    });
+    const model = await buildMentalModel(repo.root, DEFAULT_CONFIG);
+    const dedupeTask: Task = {
+      ...task,
+      id: "task-dedupe-existing",
+      title: "De-dupe into existing helper",
+      files: ["src/a.js", "src/b.js"],
+    };
+    // Rewriting the two files to import a helper added to an EXISTING out-of-scope file would leave a
+    // broken partial edit if that helper edit were dropped. The task must be skipped whole, not
+    // applied in part — otherwise validation is guaranteed to fail and the task always rolls back.
+    const provider = new FakeProvider(() =>
+      JSON.stringify({
+        explanation: "Extract into existing shared file.",
+        edits: [
+          { path: "src/a.js", content: "require('./shared').help();\n" },
+          { path: "src/b.js", content: "require('./shared').help();\n" },
+          { path: "src/shared.js", content: "module.exports = { help(){} };\n" }, // existing, unlisted
+        ],
+      }),
+    );
+    const gen = await generateEdit(model, dedupeTask, provider);
+    expect(gen.edits).toHaveLength(0);
+    expect(gen.skip).toContain("src/shared.js");
+    // The existing file on disk is untouched (generateEdit never writes).
+    expect(await fs.readFile(path.join(repo.root, "src/shared.js"), "utf8")).toBe(
+      "module.exports = {};\n",
+    );
+  });
 });
