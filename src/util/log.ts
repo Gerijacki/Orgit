@@ -29,10 +29,18 @@ export function subscribeToLog(fn: (e: LogEvent) => void): () => void {
   return () => sinks.delete(fn);
 }
 
+// Strip ANSI SGR escape sequences (colours/dim from picocolors). Callers may pass
+// pre-styled text (e.g. `log.info(log.dim(...))`), but `LogEvent.message` is contracted to
+// be plain text, so sinks like the web UI's SSE stream don't render raw `\x1b[2m…` codes.
+// eslint-disable-next-line no-control-regex
+const ANSI_SGR = /\x1b\[[0-9;]*m/g;
+
 function emit(level: LogLevel, message: string): void {
+  if (sinks.size === 0) return;
+  const plain = message.replace(ANSI_SGR, "");
   for (const fn of sinks) {
     try {
-      fn({ level, message });
+      fn({ level, message: plain });
     } catch {
       /* a broken sink must never break logging */
     }
