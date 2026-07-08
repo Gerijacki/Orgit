@@ -81,7 +81,7 @@ export async function completeJson<S extends z.ZodTypeAny>(
       lastError = (err as Error).message;
       lastRaw = raw.slice(0, 4000);
       if (attempt === 1) {
-        throw new Error(`Model did not return valid JSON: ${lastError}`);
+        throw new Error(`Model did not return valid JSON: ${lastError}`, { cause: err });
       }
     }
   }

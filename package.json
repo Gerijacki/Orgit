@@ -67,29 +67,29 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.110.0",
-    "@lancedb/lancedb": "^0.24.0",
-    "commander": "^14.0.2",
+    "@lancedb/lancedb": "^0.31.0",
+    "commander": "^15.0.0",
     "execa": "^9.5.2",
     "fast-glob": "^3.3.3",
-    "fastembed": "^1.14.4",
+    "fastembed": "^2.1.0",
     "ignore": "^7.0.5",
-    "ora": "^8.2.0",
+    "ora": "^9.4.1",
     "picocolors": "^1.1.1",
     "simple-git": "^3.28.0",
-    "zod": "^3.25.76"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@eslint/js": "^9.20.0",
-    "@types/node": "^22.15.0",
-    "@vitest/coverage-v8": "^3.0.5",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.1.0",
+    "@vitest/coverage-v8": "^4.1.10",
     "cross-env": "^10.1.0",
-    "eslint": "^9.20.0",
+    "eslint": "^10.6.0",
     "prettier": "^3.5.0",
     "tsup": "^8.4.0",
     "tsx": "^4.20.0",
-    "typescript": "^5.7.3",
-    "typescript-eslint": "^8.24.0",
-    "vitest": "^3.0.5"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.63.0",
+    "vitest": "^4.1.10"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

@@ -3,6 +3,9 @@
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    // TS 6 deprecates `baseUrl` (which tsup's .d.ts build injects internally); silence the
+    // TS5101 deprecation error until the tooling drops it. Safe: we set no `paths`.
+    "ignoreDeprecations": "6.0",
     "lib": ["ES2023"],
     "types": ["node"],
     "outDir": "dist",

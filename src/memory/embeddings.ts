@@ -39,6 +39,7 @@ export class Embeddings {
           `Failed to initialise the local embedding model "${this.modelName}". ` +
             `The first run downloads it and needs network access; check connectivity or configure a different ` +
             `"embeddingModel" in orgit.config.json. Cause: ${(err as Error).message}`,
+          { cause: err },
         );
       }
     }
@@ -64,7 +65,9 @@ export class Embeddings {
   }
 }
 
-function resolveModel(name: string): EmbeddingModel {
+// Return the specific known-model members (not the wide `EmbeddingModel`), so fastembed
+// v2's `init` overload for built-in models accepts it (its other overload is for CUSTOM).
+function resolveModel(name: string): EmbeddingModel.BGEBaseENV15 | EmbeddingModel.BGESmallENV15 {
   const n = name.toLowerCase();
   if (n.includes("bge-base")) return EmbeddingModel.BGEBaseENV15;
   if (n.includes("bge-small")) return EmbeddingModel.BGESmallENV15;
