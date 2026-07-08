@@ -58,7 +58,7 @@ export async function loadConfig(root: string): Promise<OrgitConfig> {
       return parsed;
     } catch (err) {
       if ((err as NodeJS.ErrnoException).code === "ENOENT") continue;
-      throw new Error(`Failed to load ${name}: ${(err as Error).message}`);
+      throw new Error(`Failed to load ${name}: ${(err as Error).message}`, { cause: err });
     }
   }
   return { ...DEFAULT_CONFIG };
