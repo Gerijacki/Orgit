@@ -88,3 +88,11 @@ Commit to `main` using [Conventional Commits](https://www.conventionalcommits.or
 (`feat:`, `fix:`, `chore:`, …). release-please accumulates them into a release PR;
 **merging that PR** cuts the release and publishes to npm automatically. No manual
 version bumps or `npm publish` needed.
+
+Versioning is configured in [`release-please-config.json`](../release-please-config.json)
+(manifest mode; the current version lives in
+[`.release-please-manifest.json`](../.release-please-manifest.json)). While the project is
+pre-1.0, `bump-minor-pre-major` + `bump-patch-for-minor-pre-major` keep it in **0.x**: a
+breaking change bumps the **minor** (0.1.0 → 0.2.0) and a feature bumps the **patch**, so it
+won't jump to 1.0.0 until you're ready. When you want the 1.0.0 release, set the manifest to
+`1.0.0` (or remove those two flags).

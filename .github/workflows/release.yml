@@ -22,10 +22,11 @@ jobs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
+      # Manifest mode: config comes from release-please-config.json +
+      # .release-please-manifest.json (keeps the project in 0.x — breaking changes bump the
+      # minor, features bump the patch — via bump-minor-pre-major / bump-patch-for-minor-pre-major).
       - uses: googleapis/release-please-action@v5
         id: release
-        with:
-          release-type: node
 
   publish:
     needs: release-please
