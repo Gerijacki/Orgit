@@ -40,7 +40,7 @@ jobs:
 
       # pnpm version comes from package.json "packageManager" — do not also set it here,
       # or pnpm/action-setup errors on the conflict.
-      - uses: pnpm/action-setup@v6.0.9
+      - uses: pnpm/action-setup@v6.0.10
 
       - uses: actions/setup-node@v6
         with:
