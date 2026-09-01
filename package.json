@@ -66,17 +66,17 @@
     "test:e2e": "cross-env ORGIT_E2E=1 vitest run"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.111.0",
-    "@lancedb/lancedb": "^0.31.0",
+    "@anthropic-ai/sdk": "^0.122.0",
+    "@lancedb/lancedb": "^0.37.1",
     "commander": "^15.0.0",
-    "execa": "^9.5.2",
+    "execa": "^10.0.1",
     "fast-glob": "^3.3.3",
     "fastembed": "^2.1.0",
     "ignore": "^7.0.6",
     "ora": "^9.4.1",
     "picocolors": "^1.1.1",
     "simple-git": "^3.28.0",
-    "zod": "^4.4.3"
+    "zod": "^4.5.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
