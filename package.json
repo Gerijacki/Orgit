@@ -1,6 +1,6 @@
 {
   "name": "orgit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Autonomous repository evolution engine powered by Claude Code.",
   "keywords": [
     "ai",

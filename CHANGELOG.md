@@ -4,6 +4,23 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1](https://github.com/Gerijacki/Orgit/compare/orgit-v0.1.0...orgit-v0.1.1) (2026-07-08)
+
+
+### Features
+
+* add end-to-end tests for execution, memory, mission, tester, and worktree functionalities ([ec60690](https://github.com/Gerijacki/Orgit/commit/ec60690b813eb91fe7eb30689844a5b6e6c73cd9))
+
+
+### Bug Fixes
+
+* **evolve:** bound a plain run and show per-task generation progress ([df2eb73](https://github.com/Gerijacki/Orgit/commit/df2eb730adaa20edcdfaac178d69c3ee87172bee))
+* **evolve:** bound a plain run and show per-task generation progress ([b14cfb2](https://github.com/Gerijacki/Orgit/commit/b14cfb271ae08574c6a301890eed09983c3b9a85))
+* **executor:** apply extract-to-new-module refactors instead of always rolling back ([c5e6d66](https://github.com/Gerijacki/Orgit/commit/c5e6d66b49edd6a6aaa06d8cb152717bdf9f9ac2))
+* **executor:** apply extract-to-new-module refactors instead of always rolling back ([a2947ac](https://github.com/Gerijacki/Orgit/commit/a2947ac43b2495f243f1b55910e0f216530d12f7))
+* **ui:** strip ANSI codes from the web-UI live log ([c32ec2b](https://github.com/Gerijacki/Orgit/commit/c32ec2bb5500c67ec370528c795b2d9b6e8c1268))
+* update pnpm version handling in CI and release workflows ([7133d17](https://github.com/Gerijacki/Orgit/commit/7133d17c4d4aa3b835e270248c24aa80ab34b035))
+
 ## [Unreleased]
 
 ### Added
